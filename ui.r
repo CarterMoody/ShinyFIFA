@@ -1,12 +1,3 @@
-# INSTALL SHINY DEPLOY PACKAGE
-#   install.packages('rsconnect')
-#
-# DEPLOY APP
-#   rsconnect::deployApp('C:/College/stat331/FIFA/ShinyFIFA')
-#
-# SHOW LOGS
-#   rsconnect::showLogs(account = "cartermoody", appName = "ShinyFIFA")
-
 library(ggplot2)
 library(tidyverse)
 library(mosaic)
@@ -20,6 +11,8 @@ library(maps)
 
 source("setup.R") # Load Data From RScript
 
+# Navbar Page Object, Main Title: "FIFA", allows switching
+#   between multiple tab panels
 ui <- navbarPage("FIFA",
                  
                  # Tab 1 INTERACTIVE
@@ -28,19 +21,21 @@ ui <- navbarPage("FIFA",
                                 
                              sidebarLayout(
                                 sidebarPanel(
+                                   # Define SelectInput Widgets for Selecting X Variable
                                    selectInput('xcol', 'X Variable', FIFAVars,
-                                               selected=FIFAVars[[7]]),
+                                               selected=FIFAVars[[7]]), # Selects "Compsure Attribute"
                                    selectInput('ycol', 'Y Variable', FIFAVars,
-                                               selected=FIFAVars[[8]]),
+                                               selected=FIFAVars[[8]]), # Selects "Crossing" Attribute
                                    
                                 # Create Checkboxes for Positions
                                 checkboxGroupInput("checkGroup",
                                                    label = h3("Preferred Position"),
-                                                   choices = CheckBoxChoices,
-                                                   selected = CheckBoxChoices2),
+                                                   choices = CheckBoxChoices,    # List of all Positions
+                                                   selected = CheckBoxChoices2), # Selects all but "GK" Position
                                 hr(),
                                 
                               # Create Slider Input
+                              # Adjusts for opacity of points on graph
                               sliderInput("slider1", label = h3("Alpha"), min = 0,
                                           max = 1, value = .25),
                               hr(),
@@ -52,13 +47,12 @@ ui <- navbarPage("FIFA",
                                            selected = "purple"
                               ),
                               hr()
-                              
-
-                              
+                              # End Radio Buttons
+                                  
                               ),
                               
                               mainPanel(
-                                 # Plot Two Variables
+                                 # Display the "plot1" Object in server.r
                                  plotOutput('plot1'),
                                  # Print Summary of Linear Model
                                  verbatimTextOutput('regression')
@@ -78,11 +72,12 @@ ui <- navbarPage("FIFA",
                                    # Create Checkboxes for Positions
                                    checkboxGroupInput("checkGroup2",
                                                       label = h3("Preferred Position"),
-                                                      choices = CheckBoxChoices,
-                                                      selected = CheckBoxChoices2),
+                                                      choices = CheckBoxChoices,    # List of All Positions
+                                                      selected = CheckBoxChoices2), # Selects all but "GK" Position
                                    hr()
                                    
                                 ),
+                                # Display the "DotPlot" Object in server.r
                                 mainPanel(
                                    plotOutput('DotPlot')
                                 )
@@ -97,13 +92,13 @@ ui <- navbarPage("FIFA",
                              sidebarLayout(
                                 sidebarPanel(
                                    selectInput('xcol3', 'X Variable', FIFAVars,
-                                               selected = FIFAVars[[22]]),
+                                               selected = FIFAVars[[22]]),  # Selects "SprintSpeed" Attribute
                                    
                                    # Create Checkboxes for Positions
                                    checkboxGroupInput("checkGroup3",
                                                       label = h3("Preferred Position"),
-                                                      choices = CheckBoxChoices,
-                                                      selected = CheckBoxChoices2
+                                                      choices = CheckBoxChoices,   # List of All Positions
+                                                      selected = CheckBoxChoices2  # Selects all but "GK" Position
                                                       ),
                                    hr(),
                                    
@@ -112,8 +107,10 @@ ui <- navbarPage("FIFA",
                                                 choices = ColorList
                                                 ),
                                    hr()
+                                   # End Radio Buttons
                                    
                                 ),
+                                # Display the "Histogram" Object in server.r
                                 mainPanel(
                                    plotOutput('Histogram')
                                 )
@@ -128,44 +125,43 @@ ui <- navbarPage("FIFA",
                              sidebarLayout(
                                 sidebarPanel(
                                    selectInput('xcol4', 'X Variable', FIFAVars,
-                                               selected = FIFAVars[[21]]),
+                                               selected = FIFAVars[[21]]),   # Selects "ShortPassing" Attribute
                                    
                                    # Create Checkboxes for Positions
                                    checkboxGroupInput("checkGroup4",
                                                       label = h3("Preferred Position"),
-                                                      choices = CheckBoxChoices,
-                                                      selected = CheckBoxChoices2),
+                                                      choices = CheckBoxChoices,    # List of All Positions
+                                                      selected = CheckBoxChoices2), # Selects all but "GK" Position
                                    hr()
                                    
                                 ),
+                                # Display the "qqplot" Object in server.r
                                 mainPanel(
                                    plotOutput('qqPlot')
                                 )
                              )
                           )
-                 ),
-                 
-                 
+                 ), 
                  # End Tab 4 QQPLOT
 
                  
                  # Tab 5 MAP
                  tabPanel("Map",
                           fluidPage(
-                             
                              sidebarLayout(
                                 sidebarPanel(
                                    selectInput('xcol5', 'X Variable', FIFAVars2,
-                                               selected=FIFAVars2[[18]]),
+                                               selected=FIFAVars2[[18]]),   # Selects "Overall" Attribute
                                    
                                    # Create Checkboxes for Positions
                                    checkboxGroupInput("checkGroup5",
                                                       label = h3("Preferred Position"),
-                                                      choices = CheckBoxChoices,
-                                                      selected = CheckBoxChoices2),
+                                                      choices = CheckBoxChoices,    # List of All Positions
+                                                      selected = CheckBoxChoices2), # Selects all but "GK" Position
                                    hr(),
                                    
                                    # Create Slider Input
+                                   # Selected Attribute (xcol5) Must be within this chosen range
                                    sliderInput("sliderRange", label = h3("Range"), min = 0,
                                                max = 100, value = c(40,60)),
                                    hr(),
@@ -177,13 +173,11 @@ ui <- navbarPage("FIFA",
                                                 selected = "cyan"
                                    ),
                                    hr()
-                                   
-                                   
-                                   
+                                   # End Radio Buttons
                                 ),
                                 
+                                # Plot the "map" Object from server.r
                                 mainPanel(
-                                   # Plot Two Variables
                                    plotOutput('map')
                                 )
                              )
@@ -191,12 +185,26 @@ ui <- navbarPage("FIFA",
                  ),
                  # End Tab 5 MAP
                  
-                 
                  # Tab 6 POSITIONKEY
                  tabPanel("PositionKey",
                           fluidPage(
+                             # Display the Player Position Key/Legend "Image" Object loaded in server.r
                              imageOutput("image")
                           ))
                  # End Tab 6 POSITIONKEY
          
 )
+
+##########################################################################################
+#### THE FOLLOWING ARE USEFUL COMMANDS FOR DEPLOYING THE APPLICATION TO SHINY SERVERS ####
+#### THEY DO NOT PERTAIN TO ANY CODE INCLUDED IN ABOVE FILE DO NOT INCLUDE IN COMPILE ####
+##########################################################################################
+# INSTALL SHINY DEPLOY PACKAGE
+#   install.packages('rsconnect')
+#
+# DEPLOY APP
+#   rsconnect::deployApp('C:/College/stat331/FIFA/ShinyFIFA')
+#
+# SHOW LOGS
+#   rsconnect::showLogs(account = "cartermoody", appName = "ShinyFIFA")
+##########################################################################################
