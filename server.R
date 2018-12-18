@@ -12,29 +12,32 @@ source("setup.R") # Load Data From RScript
 function(input, output, session) {
    
    # Create Input Buttons for Each TabPanel
-   output$xcol = renderPrint({ input$xcol })
    
-   output$ycol = renderPrint({ input$ycol })
+   # Bivariate Regression "plot1" Tab Object Creation
+   output$xcol = renderPrint({ input$xcol })               # X Variable Dynamic Input ( Player Attribute)
+   output$ycol = renderPrint({ input$ycol })               # Y Variable Dynamic Input ( Player Attribute)
+   output$checkGroup = renderPrint({ input$checkGroup })   # Check Group Dynamic Input ( Preferred Position )
+   output$slider = renderPrint({ input$slider1})           # Slider Variable Dynamic Input ( Attribute Range )
+   output$radio = renderPrint({ input$radio })             # Radio Group Dynamic Input ( Color )
    
-   output$xcol2 = renderPrint({ input$xcol })
+   # "dotplot" Tab Object Creation
+   output$xcol2 = renderPrint({ input$xcol })               # X Variable Dynamic Input ( Player Attribute)
+   output$checkGroup2 = renderPrint({ input$checkGroup })   # Check Group Dynamic Input ( Preferred Position )
    
-   output$xcol3 = renderPrint({ input$xcol })
+   # "histogram" Tab Object Creation
+   output$xcol3 = renderPrint({ input$xcol })               # X Variable Dynamic Input ( Player Attribute)
+   output$checkGroup3 = renderPrint({ input$checkGroup })   # Check Group Dynamic Input ( Preferred Position )
+   output$radio1 = renderPrint({ input$radio })             # Radio Group Dynamic Input ( Color )
    
-   output$xcol4 = renderPrint({ input$xcol })
-   
-   output$checkGroup = renderPrint({ input$checkGroup })
-   
-   output$checkGroup2 = renderPrint({ input$checkGroup })
-   
-   output$checkGroup3 = renderPrint({ input$checkGroup })
-   
-   output$checkGroup4 = renderPrint({ input$checkGroup })
-   
-   output$slider = renderPrint({ input$slider1})
-   
-   output$radio = renderPrint({ input$radio })
-   
-   output$radio1 = renderPrint({ input$radio })
+   # "qqplot" Tab Object Creation
+   output$xcol4 = renderPrint({ input$xcol })               # X Variable Dynamic Input ( Player Attribute)
+   output$checkGroup4 = renderPrint({ input$checkGroup })   # Check Group Dynamic Input ( Preferred Position )
+      
+   # Map Tab Object Creation
+   output$xcol5 = renderPrint({ input$xcol })               # X Variable Dynamic Input ( Player Attribute)
+   output$sliderRange = renderPrint({ input$slider2 })      # Slider Variable Dynamic Input ( Attribute Range )
+   output$checkGroup5 = renderPrint({ input$checkGroup })   # Check Group Dynamic Input ( Preferred Position )
+   output$radio2 = renderPrint({ input$radio })             # Radio Group Dynamic Input ( Color )
    
    # Image for PositionKey Tab
    # Image is Key/Legend of Player Positions for those unfamiliar with Standard Soccer Positions
@@ -45,23 +48,15 @@ function(input, output, session) {
          alt = "fifapos"))
    }, deleteFile = FALSE)
    
-   # Map Tab Object Creation
-   output$xcol5 = renderPrint({ input$xcol })               # X Variable Dynamic Input ( Player Attribute)
-   output$sliderRange = renderPrint({ input$slider2 })      # Slider Variable Dynamic Input ( Attribute Range)
-   output$checkGroup5 = renderPrint({ input$checkGroup })   # Check Group Dynamic Input ( Preferred Position )
-   output$radio2 = renderPrint({ input$radio })             # Radio Group Dynamic Input ( Color )
-   
-   
    # Plot Dotplot of Two Variables, Filtered by Position
    output$plot1 = renderPlot({
       SelectedPositions1 = paste(input$checkGroup, collapse = "|")
+      # Including Only Selected Positions, Pipe to GGPlot for Graph Creation
       FIFA %>%
-         # Create Temporary DataFrame, Including Only Selected Positions
          filter( grepl(SelectedPositions1, PreferredPositions) ) %>%
          ggplot(aes_string(x = input$xcol, y = input$ycol)) +
          geom_point(col = input$radio, alpha = (input$slider1) ) +
          geom_smooth(method = "lm", color = "black", se = FALSE)
-      
    })
    
    # Print out Linear Model of Two Variables, Filtered by Position
@@ -75,6 +70,7 @@ function(input, output, session) {
       if (length(FIFA2$X1) == 0){
          stop("No Player Data Meets Constraints")
       } else {
+      # Print Out Statistical Summary of Linear Model based from both selected Player Attributes
       summary(
          lm(formula = eval(parse(text = input$xcol)) ~ 
             eval(parse(text = input$ycol)), data = FIFA2))
